@@ -1,4 +1,5 @@
 import numpy as np
+from decimal import Decimal
 
 
 def softmax(x):
@@ -27,16 +28,17 @@ def softmax(x):
     x -- You are allowed to modify x in-place
     """
     orig_shape = x.shape
-
     if len(x.shape) > 1:
         # Matrix
         ### YOUR CODE HERE
-        raise NotImplementedError
+        exp_x = np.exp(x - np.reshape(np.max(x, axis=1), (orig_shape[0], 1)))
+        x = exp_x / np.sum(exp_x, axis=1)[:, np.newaxis]
         ### END YOUR CODE
     else:
         # Vector
         ### YOUR CODE HERE
-        raise NotImplementedError
+        exp_x = np.exp(x - np.max(x))
+        x = exp_x / np.sum(exp_x)
         ### END YOUR CODE
 
     assert x.shape == orig_shape
@@ -78,7 +80,14 @@ def test_softmax():
     """
     print "Running your tests..."
     ### YOUR CODE HERE
-    raise NotImplementedError
+    test1 = softmax(np.array([[1001, 1002], [3, 4], [3, 4], [3, 4]]))
+    print test1
+    ans1 = np.array([
+        [0.26894142, 0.73105858],
+        [0.26894142, 0.73105858],
+        [0.26894142, 0.73105858],
+        [0.26894142, 0.73105858]])
+    assert np.allclose(test1, ans1, rtol=1e-05, atol=1e-06)
     ### END YOUR CODE
 
 

@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.npy
 
 # C extensions
 *.so
@@ -23,6 +24,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.DS_Store
 MANIFEST
 
 # PyInstaller

@@ -15,7 +15,8 @@ def normalizeRows(x):
     """
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    n = np.linalg.norm(x, axis=1, keepdims=True)
+    x = x / n
     ### END YOUR CODE
 
     return x
@@ -58,7 +59,12 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     """
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    theta = np.dot(outputVectors, predicted)
+    p_o_c = softmax(theta)
+    cost = - np.log(p_o_c[target])
+    p_o_c[target] -= 1
+    gradPred = np.dot(p_o_c, outputVectors)
+    grad = np.outer(p_o_c, predicted)
     ### END YOUR CODE
 
     return cost, gradPred, grad
@@ -96,7 +102,18 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     indices.extend(getNegativeSamples(target, dataset, K))
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    gradPred = np.zeros(predicted.shape)
+    grad = np.zeros(outputVectors.shape)
+    theta = -1 * np.dot(outputVectors, predicted)
+    theta[target] = -1 * theta[target]
+    theta = sigmoid(theta)
+    cost = - np.sum(np.log(np.take(theta, indices)))
+
+    theta = -1*(theta - 1)
+    theta[target] = -1 * theta[target]
+    for i in indices:
+        grad[i] += theta[i]*predicted
+        gradPred += theta[i] * outputVectors[i]
     ### END YOUR CODE
 
     return cost, gradPred, grad
@@ -131,7 +148,14 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    c = tokens[currentWord]  # index of center word
+    v_c = inputVectors[c]
+    for w_j in contextWords:
+        o = tokens[w_j]  # index of context word
+        cost_j, gradPred, grad = word2vecCostAndGradient(v_c, o, outputVectors, dataset)
+        cost += cost_j
+        gradIn[c] += gradPred
+        gradOut += grad
     ### END YOUR CODE
 
     return cost, gradIn, gradOut
@@ -155,7 +179,12 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    c = tokens[currentWord]
+    indices = [tokens[w_j] for w_j in contextWords]
+    v = inputVectors[indices].sum(axis=0)
+    cost, gradPred, gradOut = word2vecCostAndGradient(v, c, outputVectors, dataset)
+    for i in indices:
+        gradIn[i] += gradPred
     ### END YOUR CODE
 
     return cost, gradIn, gradOut

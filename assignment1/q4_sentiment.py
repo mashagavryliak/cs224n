@@ -49,7 +49,11 @@ def getSentenceFeatures(tokens, wordVectors, sentence):
     sentVector = np.zeros((wordVectors.shape[1],))
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+
+    words = [tokens[w] for w in sentence]
+    for word in words:
+        sentVector += wordVectors[word]
+    sentVector /= len(words)
     ### END YOUR CODE
 
     assert sentVector.shape == (wordVectors.shape[1],)
@@ -63,7 +67,8 @@ def getRegularizationValues():
     """
     values = None   # Assign a list of floats in the block below
     ### YOUR CODE HERE
-    raise NotImplementedError
+    values = np.linspace(2.9, 3.1, 20)
+    # values = [3.06]
     ### END YOUR CODE
     return sorted(values)
 
@@ -89,7 +94,11 @@ def chooseBestModel(results):
     bestResult = None
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    best_accuracy = 0.0
+    for res in results:
+        if res['dev'] > best_accuracy:
+            best_accuracy = res['dev']
+            bestResult = res
     ### END YOUR CODE
 
     return bestResult
